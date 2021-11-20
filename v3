@@ -1,0 +1,170 @@
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>// Comando pra usar o getch()
+#include <string.h> // para usar o comando de contar as letras strlen
+#include <locale.h> 
+
+void forca(int num_tentativas){
+	switch (num_tentativas) {
+		case 0:
+			printf("\n____________");
+			printf("\n|          |");
+			printf("\n|");
+			printf("\n|");
+			printf("\n|");
+			printf("\n|");
+			printf("\n|");
+			printf("\n-");
+			break;
+		case 1:
+			printf("\n____________");
+			printf("\n|          |");
+			printf("\n|          O");
+			printf("\n|");
+			printf("\n|");
+			printf("\n|");
+			printf("\n|");
+			printf("\n-");
+			break;
+		case 2:
+			printf("\n____________");
+			printf("\n|          |");
+			printf("\n|          O");
+			printf("\n|          |");
+			printf("\n|");
+			printf("\n|");
+			printf("\n|");
+			printf("\n-");
+			break;
+		case 3:
+			printf("\n____________");
+			printf("\n|          |");
+			printf("\n|          O");
+			printf("\n|         -|");
+			printf("\n|           ");
+			printf("\n|");
+			printf("\n|");
+			printf("\n-");
+			break;
+		case 4:
+			printf("\n____________");
+			printf("\n|          |");
+			printf("\n|          O");
+			printf("\n|         -|-");
+			printf("\n|           ");
+			printf("\n|");
+			printf("\n|");
+			printf("\n-");
+			break;
+		case 5:
+			printf("\n____________");
+			printf("\n|          |");
+			printf("\n|          O");
+			printf("\n|         -|-");
+			printf("\n|         / ");
+			printf("\n|");
+			printf("\n|");
+			printf("\n-");
+			break;
+		case 6:
+			printf("\n____________");
+			printf("\n|          |");
+			printf("\n|          O");
+			printf("\n|         -|-");
+			printf("\n|         / \\");
+			printf("\n|");
+			printf("\n|      Game Over!");
+			printf("\n-");
+			break;
+	}	
+}
+//parte 1 do game
+int main(){
+	
+	setlocale(LC_ALL,"portuguese");
+// variaveis
+	char p_sec[30], dica[128], palavra_forca[30];
+	char letra;
+	int i, num_tentativas = 0, letra_encontrada = 1;
+
+
+//info jogador 1
+	printf("|---JOGADOR 1---|\n");
+	printf("Digite a palavra secreta: "); // palava secreta = p_sec!
+	fgets(p_sec,30,stdin);
+//dica
+	printf("Dica: ");
+	fgets(dica,128,stdin);
+//info p_sec
+	printf("\nA palavra secreta é: %s", p_sec); // informaçoes da palavra secreta
+	printf("Quantidade de caracteres: %d\n", strlen(p_sec)-1);// -1 pq o "enter" tbm é somado!!
+	printf("A dica é: %s\n", dica);
+//fim jogardor 1
+	printf("*****Pressione qualquer tecla para prosseguir*****");
+	getch();
+	
+//limpando a tela do console
+	system("cls");
+	
+//vez do jogador 2 ---
+//tirando o ultimo caractere "\0" & escondendo a palavra secreta usando o strcpy() pra copiar o "p_sec" em "palavra_forca"
+	p_sec[strlen(p_sec)-1]='\0';
+	
+	strcpy(palavra_forca, p_sec);
+	
+//imprimindo o '_' na msm quantidade de letras da p_sec/palavra_forca
+	for(i = 0; i < strlen(palavra_forca); i++){
+		palavra_forca[i] = '_';
+	}
+	
+	printf("|---JOGADOR 2---|");
+	while(1){
+// imprimir a forca
+		forca(num_tentativas);
+
+//interface do jogador 2
+//"for" para verificar de a caractere digitada é igual a alguma caractere da 'palavra_forca'
+		printf("\nAdivinhe a palavra:");
+		for(i = 0; i < strlen(palavra_forca); i++){
+			printf(" %c ", palavra_forca[i]);
+		}
+		printf("\nDica: %s", dica);
+		printf("Contagem de erros: %d (Max.: 6)", num_tentativas);
+		
+//recebendo a letra
+		printf("\nLetra: ");
+			scanf(" %c", &letra); //espaço antes do %c por causa de um bug.
+			
+//verifica se a letra é correta e atualizar na tela
+	int teste_erro=1;
+		for(i=0; i<strlen(palavra_forca); i++){
+			if(letra == p_sec[i]){
+				palavra_forca[i] = letra;
+				teste_erro=0;
+			}
+		}
+//testando se a letra existe na variavel e caso não tenha a letra, aumenta o numero de erros
+		if(teste_erro==1){
+			(num_tentativas++);
+		}
+//imprimindo vitoria
+		if(strcmp(palavra_forca,p_sec)==0){ //strcmp foi visto na aula de 09 Walace : "strcmp() = 0, if the s1 and s2 are equal"
+			printf("\nAdivinhe a palavra:");
+				for(i = 0; i < strlen(palavra_forca); i++){
+					printf(" %c ", palavra_forca[i]);
+				}
+			printf("\n******* Você venceu! *******");
+			printf("\n********* You won! *********");
+			printf("\n******* Tu as gagné! *******");
+			printf("\n******** Hai vinto! *********");
+			printf("\n******** ¡Ganaste! **********");
+			break;
+		}
+//imprimindo derrota
+		if(num_tentativas==6){
+			forca(num_tentativas);
+			break;
+		}
+	}
+return 0;
+}
