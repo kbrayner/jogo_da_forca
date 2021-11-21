@@ -1,140 +1,228 @@
+/**
+ * Importação de bibliotecas
+ */
 #include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <locale.h>
 
-void forca(int num_tentativas){
+
+/**
+ * Declarações das funções em ordem alfabética
+ */
+
+/* Função que desenha a forca de acordo com o número total de tentativas restantes */
+// A função recebe um inteiro que representa o número de tentativas restantes e
+// imprime o desenho da forca de acordo com as tentativas.
+void desenha_forca(int num_tentativas);
+/* Função que permite que usuário digite apenas um caractere no console para entrada de dados */
+// Função solicita um caractere ao usuário e caso seja informado mais de um caractere, solicita
+// que o usuário digite novamente. Retorna o caractere.
+char ler_letra();
+
+
+
+/**
+ * Função principal do jogo
+ */
+int main()
+{
 	
-	switch (num_tentativas) {
-		case 6:
-			printf("\n____________");
-			printf("\n|          |");
-			printf("\n|");
-			printf("\n|");
-			printf("\n|");
-			printf("\n|");
-			printf("\n|");
-			printf("\n-");
-			break;
-		case 5:
-			printf("\n____________");
-			printf("\n|          |");
-			printf("\n|          O");
-			printf("\n|");
-			printf("\n|");
-			printf("\n|");
-			printf("\n|");
-			printf("\n-");
-			break;
-		case 4:
-			printf("\n____________");
-			printf("\n|          |");
-			printf("\n|          O");
-			printf("\n|          |");
-			printf("\n|");
-			printf("\n|");
-			printf("\n|");
-			printf("\n-");
-			break;
-		case 3:
-			printf("\n____________");
-			printf("\n|          |");
-			printf("\n|          O");
-			printf("\n|         -|");
-			printf("\n|           ");
-			printf("\n|");
-			printf("\n|");
-			printf("\n-");
-			break;
-		case 2:
-			printf("\n____________");
-			printf("\n|          |");
-			printf("\n|          O");
-			printf("\n|         -|-");
-			printf("\n|           ");
-			printf("\n|");
-			printf("\n|");
-			printf("\n-");
-			break;
-		case 1:
-			printf("\n____________");
-			printf("\n|          |");
-			printf("\n|          O");
-			printf("\n|         -|-");
-			printf("\n|         / ");
-			printf("\n|");
-			printf("\n|");
-			printf("\n-");
-			break;
-		case 0:
-			printf("\n____________");
-			printf("\n|          |");
-			printf("\n|          O");
-			printf("\n|         -|-");
-			printf("\n|         / \\");
-			printf("\n|");
-			printf("\n|      Game Over!");
-			printf("\n-");
-			break;
-	}	
-}
-	 
-int main(void) {
 	setlocale (LC_ALL, "Portuguese");
-	
-	int num_tentativas = 6;
-	int i;
-	int letra_encontrada;
-	char secret_word[100];
-	char palavra_forca[100];
+
+	// variaveis
+	char palavra_secreta[30], dica[128], palavra_forca[30];
 	char letra;
-	
-	printf("JOGADOR 1:\n");
-	printf("Informe a palavra secreta:\n");
-	fgets(secret_word, 100, stdin);
-	printf("A palavra secreta �: %s", secret_word);
-	printf("A palavra possui %d caracteres", strlen(secret_word)-1);
-	for(i = 0; i < 30; i++){
-		printf("\n");
-	}
-	strcpy(palavra_forca, secret_word);
-	palavra_forca[strlen(palavra_forca)-1]='\0';
-	
-	for(i = 0; i < strlen(palavra_forca); i++){
+	int i, num_tentativas = 0;
+
+	//info jogador 1
+	printf("|---JOGADOR 1---|\n");
+	printf("Digite a palavra secreta: "); // palava secreta = palavra_secreta!
+	fgets(palavra_secreta, 30, stdin);
+	//dica
+	printf("Dica: ");
+	fgets(dica, 128, stdin);
+	//info palavra_secreta
+	printf("\nA palavra secreta é: %s", palavra_secreta);									 // informaçoes da palavra secreta
+	printf("Quantidade de caracteres: %d\n", strlen(palavra_secreta) - 1); // -1 pq o "enter" tbm é somado!!
+	printf("A dica é: %s\n", dica);
+	//fim jogardor 1
+	printf("*****Pressione qualquer tecla para prosseguir*****");
+	getch();
+
+	//limpando a tela do console
+	system("cls");
+
+	//vez do jogador 2 ---
+	//tirando o ultimo caractere "\0" & escondendo a palavra secreta usando o strcpy() pra copiar o "palavra_secreta" em "palavra_forca"
+	palavra_secreta[strlen(palavra_secreta) - 1] = '\0';
+
+	strcpy(palavra_forca, palavra_secreta);
+
+	//imprimindo o '_' na msm quantidade de letras da palavra_secreta/palavra_forca
+	for (i = 0; i < strlen(palavra_forca); i++)
+	{
 		palavra_forca[i] = '_';
 	}
-	
-	while(1){
-		
-		letra_encontrada = 0;
-		
+
+	printf("|---JOGADOR 2---|");
+	while (1)
+	{
 		// imprimir a forca
-		forca(num_tentativas);
-		// imprimir os underline para cada letra da palavra secreta
+		desenha_forca(num_tentativas);
+
+		//interface do jogador 2
+		//"for" para verificar de a caractere digitada é igual a alguma caractere da 'palavra_forca'
 		printf("\nAdivinhe a palavra:");
-		for(i = 0; i < strlen(palavra_forca); i++){
-			printf("%c", palavra_forca[i]);
+		for (i = 0; i < strlen(palavra_forca); i++)
+		{
+			printf(" %c ", palavra_forca[i]);
 		}
-		// recebe a letra
-		printf("\nLetra: ");
-		scanf("%c", &letra);
-		// se letra correta atualiza palavra na tela
-		// verifica se a letra � correta
-		for(i = 0; i < strlen(palavra_forca); i++){
-			if(letra == secret_word[i]){
+		printf("\nDica: %s", dica);
+		printf("Contagem de erros: %d (Max.: 6)\n", num_tentativas);
+
+		//recebendo a letra
+		letra = ler_letra();
+
+		//verifica se a letra é correta e atualizar na tela
+		int teste_erro = 1;
+		for (i = 0; i < strlen(palavra_forca); i++)
+		{
+			if (letra == palavra_secreta[i])
+			{
 				palavra_forca[i] = letra;
-				letra_encontrada = 1;
+				teste_erro = 0;
 			}
 		}
-		// se nao encontrou a letra, diminiu uma tentativa
-		if(letra_encontrada == 0){
-			num_tentativas--;
+		//testando se a letra existe na variavel e caso não tenha a letra, aumenta o numero de erros
+		if (teste_erro == 1)
+		{
+			(num_tentativas++);
 		}
-		// verifica se o jogo acabou
-		if(num_tentativas == 0){
-			forca(num_tentativas);
+		//imprimindo vitoria
+		if (strcmp(palavra_forca, palavra_secreta) == 0)
+		{ //strcmp foi visto na aula de 09 Walace : "strcmp() = 0, if the s1 and s2 are equal"
+			printf("\nAdivinhe a palavra:");
+			for (i = 0; i < strlen(palavra_forca); i++)
+			{
+				printf(" %c ", palavra_forca[i]);
+			}
+			printf("\n******* Você venceu! *******");
+			printf("\n********* You won! *********");
+			printf("\n******* Tu as gagné! *******");
+			printf("\n******** Hai vinto! *********");
+			printf("\n******** ¡Ganaste! **********");
+			break;
+		}
+		//imprimindo derrota
+		if (num_tentativas == 6)
+		{
+			desenha_forca(num_tentativas);
 			break;
 		}
 	}
-	
 	return 0;
+}
+
+
+
+
+void desenha_forca(int num_tentativas)
+{
+	switch (num_tentativas)
+	{
+	case 0:
+		printf("\n____________");
+		printf("\n|          |");
+		printf("\n|");
+		printf("\n|");
+		printf("\n|");
+		printf("\n|");
+		printf("\n|");
+		printf("\n-");
+		break;
+	case 1:
+		printf("\n____________");
+		printf("\n|          |");
+		printf("\n|          O");
+		printf("\n|");
+		printf("\n|");
+		printf("\n|");
+		printf("\n|");
+		printf("\n-");
+		break;
+	case 2:
+		printf("\n____________");
+		printf("\n|          |");
+		printf("\n|          O");
+		printf("\n|          |");
+		printf("\n|");
+		printf("\n|");
+		printf("\n|");
+		printf("\n-");
+		break;
+	case 3:
+		printf("\n____________");
+		printf("\n|          |");
+		printf("\n|          O");
+		printf("\n|         -|");
+		printf("\n|           ");
+		printf("\n|");
+		printf("\n|");
+		printf("\n-");
+		break;
+	case 4:
+		printf("\n____________");
+		printf("\n|          |");
+		printf("\n|          O");
+		printf("\n|         -|-");
+		printf("\n|           ");
+		printf("\n|");
+		printf("\n|");
+		printf("\n-");
+		break;
+	case 5:
+		printf("\n____________");
+		printf("\n|          |");
+		printf("\n|          O");
+		printf("\n|         -|-");
+		printf("\n|         / ");
+		printf("\n|");
+		printf("\n|");
+		printf("\n-");
+		break;
+	case 6:
+		printf("\n____________");
+		printf("\n|          |");
+		printf("\n|          O");
+		printf("\n|         -|-");
+		printf("\n|         / \\");
+		printf("\n|");
+		printf("\n|      Game Over!");
+		printf("\n-");
+		break;
+	}
+}
+
+char ler_letra(void)
+{
+	// Cria string de tamanho 3 para ler até 2 caracteres do usuário no scanf, para verificar se o
+	// usuário digitou mais de um caractere, pois o terceiro caractere será o '\0' (fim de string)
+	char letra[3];
+
+	printf("Digite uma letra: ");
+	scanf("%2s", &letra);
+	fflush(stdin);
+
+	// Entra no loop para pedir para o usuário digitar apenas um caractere
+	while (strlen(letra) > 1)
+	{
+		printf("Você digitou mais de uma letra, por favor digite APENAS uma letra: ");
+		scanf("%2s", &letra);
+		fflush(stdin);
+	}
+
+	// Retorna o caractere
+	return letra[0];
 }
