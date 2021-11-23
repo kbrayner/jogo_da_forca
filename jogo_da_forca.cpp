@@ -8,6 +8,10 @@
 #include <locale.h>
 
 
+const int VALOR_DICA = 20;
+const int VALOR_PALAVRA = 50;
+const int VALOR_TENTATIVAS = 10;
+
 /**
  * Declarações das funções em ordem alfabética
  */
@@ -19,17 +23,21 @@ void desenha_forca(int num_tentativas);
 /* Função que permite que usuário digite apenas um caractere no console para entrada de dados */
 // Função solicita um caractere ao usuário e caso seja informado mais de um caractere, solicita
 // que o usuário digite novamente. Retorna o caractere.
-char ler_letra();
-
-
+char ler_letra(void);
+/* Função que solicita opção de menu */
+// Função solicita uma das opções válidas do menu ao usuário e caso seja informado uma opção inválida
+// solicita novamente uma opção válida.
+int menu(void);
 
 /**
  * Função principal do jogo
  */
 int main()
 {
+	setlocale(LC_ALL, "Portuguese");
+	menu();
+
 	
-	setlocale (LC_ALL, "Portuguese");
 
 	// variaveis
 	char palavra_secreta[30], dica[128], palavra_forca[30];
@@ -124,9 +132,6 @@ int main()
 	}
 	return 0;
 }
-
-
-
 
 void desenha_forca(int num_tentativas)
 {
@@ -225,4 +230,41 @@ char ler_letra(void)
 
 	// Retorna o caractere
 	return letra[0];
+}
+
+int menu(void)
+{
+	printf("*************************************************************************************\n");
+	printf("*************************************************************************************\n");
+	printf("**                                                                                 **\n");
+	printf("**                                                                                 **\n");
+	printf("**    ||||||||||||    ||||||||||    ||||||||||       |||||||||||      ||||||       **\n");
+	printf("**    ||             ||        ||   ||       ||     ||               ||    ||      **\n");
+	printf("**    ||             ||        ||   ||        ||   ||               ||      ||     **\n");
+	printf("**    |||||||        ||        ||   ||       ||    ||              ||        ||    **\n");
+	printf("**    ||             ||        ||   |||||||||      ||              ||||||||||||    **\n");
+	printf("**    ||             ||        ||   ||      ||     ||              ||        ||    **\n");
+	printf("**    ||             ||        ||   ||       ||     ||             ||        ||    **\n");
+	printf("**    ||              ||||||||||    ||        ||     |||||||||||   ||        ||    **\n");
+	printf("**                                                                                 **\n");
+	printf("**                                                                                 **\n");
+	printf("*************************************************************************************\n");
+	printf("**    ================                                                             **\n");
+	printf("**    ||             |                                                             **\n");
+	printf("**    ||         _======_                      ______________________              **\n");
+	printf("**    ||        || o  o ||                    |         MENU         |             **\n");
+	printf("**    ||        ||   _  ||                    | 1 - Jogar            |             **\n");
+	printf("**    ||        ||-====-||                    | 2 - Exibir Ranking   |             **\n");
+	printf("**    ||        |    |   |                    | 3 - Mostrar Creditos |             **\n");
+	printf("**    ||          //|||\\\\                     |______________________|             **\n");
+	printf("**    ||         // ||| \\\\                                                         **\n");
+	printf("**    ||            |||                                                            **\n");
+	printf("**    ||            |||                                                            **\n");
+	printf("**    ||           // \\\\                                                           **\n");
+	printf("**    ||          //   \\\\                                                          **\n");
+	printf("**                                                                                 **\n");
+	printf("**                                                                                 **\n");
+	printf("**                                                                                 **\n");
+	printf("*************************************************************************************\n");
+	printf("*************************************************************************************\n");
 }
