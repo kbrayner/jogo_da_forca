@@ -56,7 +56,7 @@ void desenha_menu(void);
 
 /*  */
 //
-void jogar(PalavraSecreta *palavras, int total_palavras);
+void jogar(PalavraSecreta *palavras, int total_palavras, char *nome_jogador);
 
 /*  */
 //
@@ -69,7 +69,7 @@ char ler_letra(void);
 
 /* Função que */
 // Função.
-void ler_nome(char *nome, int tamanho_maximo);
+void ler_nome_jogador(char *nome, int tamanho_maximo);
 
 /* Função que */
 // Função.
@@ -111,9 +111,13 @@ int main(void)
 	int total_palavras = 0;
 	int opcao;
 	bool voltar;
+	char nome_jogador[255];
 
 	// Carrega as palavras do arquivo de texto
 	ler_palavras(nome_arquivo, &palavras, &total_palavras);
+
+	printf("Ola jogador, bem-vindo ao jogo da forca.\nPor favor, digite seu nome: ");
+	ler_nome_jogador(nome_jogador, 254);
 
 	do
 	{
@@ -122,7 +126,7 @@ int main(void)
 		switch (opcao)
 		{
 		case JOGAR:
-			jogar(palavras, total_palavras);
+			jogar(palavras, total_palavras, nome_jogador);
 			break;
 		case MOSTRAR_RANK:
 			mostrar_rank();
@@ -301,10 +305,11 @@ void desenha_menu()
 	printf("*************************************************************************************\n");
 }
 
-void jogar(PalavraSecreta *palavras, int total_palavras)
+void jogar(PalavraSecreta *palavras, int total_palavras, char *nome_jogador)
 {
 	limpar_tela();
 
+	int pontuacao = 0; // TODO Implementar pontuação
 	int categoria = ler_categoria();
 	char letra;
 	// Sorteia uma palavra aleatoriamente
@@ -333,7 +338,7 @@ void jogar(PalavraSecreta *palavras, int total_palavras)
 	}
 
 	qtd_letras_usadas = 0; // zera a variavel de controle
-	qtd_tentativas = 6;	 // reinicia número de tentativas
+	qtd_tentativas = 6;		 // reinicia número de tentativas
 
 	while (strcmp(palavra_sorteada.palavra, palavra_forca) != 0 && qtd_tentativas > 0)
 	{
@@ -414,6 +419,10 @@ void jogar(PalavraSecreta *palavras, int total_palavras)
 	}
 
 	free(palavra_forca); // Sempre liberar variáveis alocadas dinamicamente
+
+	/* TODO 
+	 * Calcular score para rank e salvar o nome do jogador (nome_jogador) juntamente com o score (pontuacao) em arquivo de texto.
+	 */
 }
 
 PalavraSecreta sortear_palavra_categoria(int categoria, PalavraSecreta *array_palavras, int tamanho_array)
@@ -478,10 +487,10 @@ char ler_letra(void)
 	return letra[0];
 }
 
-void ler_nome(char *nome, int tamanho_maximo)
+void ler_nome_jogador(char *nome, int tamanho_maximo)
 {
-	printf("Informe o seu nome: ");
 	fgets(nome, tamanho_maximo - 1, stdin);
+	strtok(nome, "\n"); // Remove o '\n' do fim da string
 	fflush(stdin);
 }
 
